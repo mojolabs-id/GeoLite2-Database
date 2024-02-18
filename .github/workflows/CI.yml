@@ -28,7 +28,7 @@ jobs:
             for db in $DATABASE; do
               db_name="$pf-$db"
               if wget -nv -O /tmp/$db_name.tar.gz "https://download.maxmind.com/app/geoip_download?edition_id=$db_name&license_key=${{ secrets.LICENSE_KEY }}&suffix=tar.gz" ;then
-              tar zxv /tmp/$db_name.tar.gz --strip-components=1 -C upload
+              tar –xvzf /tmp/$db_name.tar.gz --strip-components=1 -C upload
               fi
               if wget -nv -O /tmp/$db_name-CSV.zip "https://download.maxmind.com/app/geoip_download?edition_id=$db_name-CSV&license_key=${{ secrets.LICENSE_KEY }}&suffix=zip" ;then
               echo A |unzip -j /tmp/$db_name-CSV.zip -d upload
