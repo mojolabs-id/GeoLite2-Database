@@ -9,7 +9,7 @@ on:
     - cron: 0 1 */3 * *
 env:
   PREFIX: "GeoLite2 GeoIP2"
-  DATABASE: "ASN City Country ISP Enterprise"
+  DATABASE: "ASN City Country ISP Domain Anonymous-IP Connection-Type Enterprise"
 permissions:
   contents: write
 # This allows a subsequently queued workflow run to interrupt previous runs
