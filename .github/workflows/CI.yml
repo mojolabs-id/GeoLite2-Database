@@ -8,7 +8,8 @@ on:
   schedule:
     - cron: 0 1 */3 * *
 env:
-  DATABASE: "ASN City Country"
+  PREFIX: "GeoLite2 GeoIP2"
+  DATABASE: "ASN City Country ISP Enterprise"
 permissions:
   contents: write
 # This allows a subsequently queued workflow run to interrupt previous runs
@@ -23,11 +24,18 @@ jobs:
       - name: Download mmdb
         run: |
           mkdir -p upload
-          for db in $DATABASE; do
-          wget -nv -O- "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-$db&license_key=${{ secrets.LICENSE_KEY }}&suffix=tar.gz" | tar zxv --strip-components=1 -C upload;
-          wget -nv -O /tmp/GeoLite2-$db-CSV.zip "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-$db-CSV&license_key=${{ secrets.LICENSE_KEY }}&suffix=zip";
-          echo A |unzip -j /tmp/GeoLite2-$db-CSV.zip -d upload
+          for pf in PREFIX; do
+            for db in $DATABASE; do
+              db_name="$pf-$db"
+              if wget -nv -O /tmp/$db_name.tar.gz "https://download.maxmind.com/app/geoip_download?edition_id=$db_name&license_key=${{ secrets.LICENSE_KEY }}&suffix=tar.gz" ;then
+              tar zxv /tmp/$db_name.tar.gz --strip-components=1 -C upload
+              fi
+              if wget -nv -O /tmp/$db_name-CSV.zip "https://download.maxmind.com/app/geoip_download?edition_id=$db_name-CSV&license_key=${{ secrets.LICENSE_KEY }}&suffix=zip" ;then
+              echo A |unzip -j /tmp/$db_name-CSV.zip -d upload
+              fi
+            done
           done
+
           echo "TAG_NAME=$(date +"%Y.%m.%d")" >> $GITHUB_ENV
       - name: Upload to ${{ env.TAG_NAME }}
         uses: softprops/action-gh-release@v1
@@ -38,7 +46,7 @@ jobs:
           body: ${{ github.sha }}
           files: |
             upload/*.mmdb
-            upload/GeoLite2*.csv
+            upload/*.csv
       - name: Upload to Latest
         uses: softprops/action-gh-release@v1
         env:
