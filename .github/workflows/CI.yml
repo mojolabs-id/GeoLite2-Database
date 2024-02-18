@@ -24,7 +24,7 @@ jobs:
       - name: Download mmdb
         run: |
           mkdir -p upload
-          for pf in PREFIX; do
+          for pf in $PREFIX; do
             for db in $DATABASE; do
               db_name="$pf-$db"
               if wget -nv -O /tmp/$db_name.tar.gz "https://download.maxmind.com/app/geoip_download?edition_id=$db_name&license_key=${{ secrets.LICENSE_KEY }}&suffix=tar.gz" ;then
