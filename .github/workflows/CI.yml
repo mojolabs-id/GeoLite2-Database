@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: Download mmdb
+      - name: Download GeoLite2
         run: |
           mkdir -p upload
           for pf in $PREFIX; do
@@ -35,7 +35,6 @@ jobs:
               fi
             done
           done
-
           echo "TAG_NAME=$(date +"%Y.%m.%d")" >> $GITHUB_ENV
       - name: Upload to ${{ env.TAG_NAME }}
         uses: softprops/action-gh-release@v1
